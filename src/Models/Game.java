@@ -44,17 +44,19 @@ public class Game {
 
     public void makeMove(){
         Player currPlayer = players.get(currentMovePlayer);
-
-        Cell proposedCell = currPlayer.makeMove();
-
+        System.out.println("Current Player: "+currPlayer.getName());
+        Cell proposedCell = currPlayer.makeMove(board);
+        System.out.println("Moved made at row: "+proposedCell.getRow() + " Col: "+proposedCell.getCol());
         if (!validateMove(proposedCell)){
+            System.out.println("Invalid Move: "+currPlayer.getName());
             return;
         }
+        Cell cell = board.getBoard().get(proposedCell.getRow()).get(proposedCell.getCol());
+        cell.setCellStatus(CellStatus.FILLED);
+        cell.setPlayer(currPlayer);
 
-        proposedCell.setCellStatus(CellStatus.FILLED);
-        proposedCell.setPlayer(currPlayer);
 
-        Move move = new Move(currPlayer,proposedCell);
+        Move move = new Move(currPlayer,cell);
         moves.add(move);
 
         if (checkGameWinner(currPlayer, move)) return;
@@ -64,6 +66,25 @@ public class Game {
         currentMovePlayer += 1 ;
         currentMovePlayer = currentMovePlayer%players.size();
 
+    }
+
+    public void undo(){
+        if (moves.size() == 0 ){
+            System.out.println("no moves");
+            return;
+        }
+        Move lastmove = moves.get(moves.size()-1);
+        Cell cell =  lastmove.getCell();
+        cell.setCellStatus(CellStatus.EMPTY);
+        cell.setPlayer(null);
+        moves.remove(lastmove);
+        for(WinningStrategy winningStrategy: winningStrategys){
+            winningStrategy.handleUndo(board,lastmove);
+        }
+
+        currentMovePlayer -=1;
+        currentMovePlayer += players.size();
+        currentMovePlayer = currentMovePlayer%players.size();
     }
 
     private boolean checkGameDraw() {

@@ -23,11 +23,11 @@ public class GameController {
     }
 
     public void undo(Game game){
-
+        game.undo();
     }
 
     public void makeMove(Game game){
-
+        game.makeMove();
     }
 
     public GameStatus getGameStatus(Game game){
@@ -39,10 +39,10 @@ public class GameController {
     }
 
     public void printResult(Game game){
-//        GameStatus gameStatus = gameController.getGameStatus();
+//        GameStatus gameStatus = game.getGameStatus();
 //
 //        if(gameStatus.equals(GameStatus.ENDED)){
-//            gameController.printWinner();
+//            game.printWinner();
 //        }else{
 //            System.out.println("Game is DRAW");
 //        }

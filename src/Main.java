@@ -2,6 +2,7 @@ import Controllers.GameController;
 import Models.*;
 import Strategy.Winningstrategy.OrderOneColWinningStrategy;
 import Strategy.Winningstrategy.OrderOneDiagonalWinningStrategy;
+import Strategy.Winningstrategy.OrderOneRowWinningStrategy;
 
 import java.util.List;
 import java.util.Scanner;
@@ -13,44 +14,38 @@ public class Main {
         GameController gameController = new GameController();
         Scanner scanner = new Scanner(System.in);
         Game game;
-
-
+        int n = 3;
+        List<Player> players = List.of(
+                new Player(new Symbol('X'),"Vishal ",PlayerType.HUMAN),
+                new Bot(new Symbol('O'),"Bot ", BotDifficultLevel.EASY)
+        );
 
         try{
-            game = gameController.createGame(3,
+            game = gameController.createGame(n,players,
                     List.of(
-                            new Player(new Symbol('X'),"Vishal ",PlayerType.HUMAN),
-                            new Bot(new Symbol('O'),"Bot ", BotDifficultLevel.EASY)
-                            ),
-                    List.of(
-                            new OrderOneDiagonalWinningStrategy(),
-                            new OrderOneColWinningStrategy(),
-                            new OrderOneDiagonalWinningStrategy()
+                            new OrderOneDiagonalWinningStrategy(n,players),
+                            new OrderOneColWinningStrategy(n,players),
+                            new OrderOneRowWinningStrategy(n,players)
                             )
                     );
         }catch (Exception e){
             System.out.println("something went wrong");
             return;
         }
-
+        System.out.println("----------------Game is starting----------------");
         while(gameController.getGameStatus(game).equals(GameStatus.IN_PROGRESS)){
-            //printing
+            System.out.println("Currently board looks like");
             gameController.displayBoard(game);
-            //for undo
-            System.out.println("Do you want to UNDO? (Y?N)");
+            System.out.println("Do anyone want to UNDO? (Y?N)");
             String input = scanner.next();
-
             if (input.equals("y")){
                 gameController.undo(game);
             }
             else {
-                //next move
                 gameController.makeMove(game);
             }
         }
-        //getting results
-
-        gameController.printResult(game);
+        gameController.printWinner(game);
 
     }
 }

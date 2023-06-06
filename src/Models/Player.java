@@ -1,13 +1,21 @@
 package Models;
 
+import java.util.Scanner;
+
 public class Player {
     private Symbol symbol;
     private String name;
     private PlayerType playerType;
+    private Scanner scanner;
 
 
-    Cell makeMove(){
-        return null;
+    Cell makeMove(Board board){
+        System.out.println("Please enter ROW number : ");
+        int row = scanner.nextInt();
+
+        System.out.println("Please enter COLUMN number : ");
+        int col = scanner.nextInt();
+        return new Cell(row,col);
     }
 
     public Symbol getSymbol() {
@@ -18,6 +26,7 @@ public class Player {
         this.symbol = symbol;
         this.name = name;
         this.playerType = playerType;
+        this.scanner = new Scanner(System.in);
     }
 
     public void setSymbol(Symbol symbol) {
